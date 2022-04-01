@@ -1,10 +1,28 @@
-import React from 'react'
+import React, { useState } from 'react'
 import useTShirts from '../../hooks/useTShirts'
 import Cart from '../Cart/Cart'
 import TShirt from '../TShirt/TShirt'
 import './Home.css'
 const Home = () => {
     const [tShirts, setTShirts] = useTShirts([])
+    const [cart, setCart] = useState([])
+
+    const handleAddToCart = selectedItem => {
+        const exist = cart.find(tShirt => tShirt._id === selectedItem._id)
+        if (!exist) {
+            const newCart = [...cart, selectedItem]
+            setCart(newCart)
+        }
+        else {
+            alert('Item Already Added')
+        }
+
+    }
+
+    const handleRemoveFormCart = selectedItem => {
+        const rest = cart.filter(tShirt => tShirt._id !== selectedItem._id)
+        setCart(rest)
+    }
     return (
         <div className='home-container'>
             <div className="tshirt-container">
@@ -12,11 +30,15 @@ const Home = () => {
                     tShirts.map(tShirt => <TShirt
                         key={tShirt._id}
                         tShirt={tShirt}
+                        handleAddToCart={handleAddToCart}
                     ></TShirt>)
                 }
             </div>
             <div className="cart-container">
-                <Cart></Cart>
+                <Cart
+                    handleRemoveFormCart={handleRemoveFormCart}
+                    cart={cart}
+                ></Cart>
             </div>
         </div>
     )
